@@ -90,7 +90,7 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <th>Market</th><th>Strategy</th><th>Side</th><th>Entry</th><th>SL</th><th>TP</th><th>R:R</th><th>Feed</th><th>Conf.</th>
+                            <th>Market</th><th>Strategy</th><th>Side</th><th>Entry</th><th>SL</th><th>TP 1/2/3</th><th>R:R</th><th>Feed</th><th>Conf.</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -101,7 +101,11 @@
                                 <td><span class="badge {{ $signal->direction === 'buy' ? 'badge-buy' : 'badge-sell' }}">{{ strtoupper($signal->direction) }}</span></td>
                                 <td>{{ number_format($signal->entry, $signal->market->precision()) }}</td>
                                 <td class="down">{{ number_format($signal->stop_loss, $signal->market->precision()) }}</td>
-                                <td class="up">{{ number_format($signal->take_profit, $signal->market->precision()) }}</td>
+                                <td class="up">
+                                    <small>{{ number_format($signal->tp1, $signal->market->precision()) }}</small><br>
+                                    <small>{{ number_format($signal->tp2, $signal->market->precision()) }}</small><br>
+                                    <strong>{{ number_format($signal->take_profit, $signal->market->precision()) }}</strong>
+                                </td>
                                 <td>{{ number_format($signal->risk_reward, 1) }}</td>
                                 <td><span class="feed-chip feed-{{ $signal->data_status }}">{{ strtoupper($signal->data_status ?? 'unknown') }} · {{ strtoupper($signal->data_source ?? 'unknown') }}</span></td>
                                 <td class="muted">{{ $signal->confidence }}%</td>

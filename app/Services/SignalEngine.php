@@ -65,10 +65,27 @@ class SignalEngine
             if ($ai['bias'] === 'bullish' && $result['direction'] === 'sell') continue;
             if ($ai['bias'] === 'bearish' && $result['direction'] === 'buy') continue;
 
+            $pip = $market->pipSize();
+            $slDist = 10 * $pip;
+            $tp1Dist = 10 * $pip;
+            $tp2Dist = 15 * $pip;
+            $tp3Dist = 20 * $pip;
+
+            $entry = round($result['entry'], 5);
+            $dir = $result['direction'];
+
+            $stopLoss = round($dir === 'buy' ? $entry - $slDist : $entry + $slDist, 5);
+            $tp1 = round($dir === 'buy' ? $entry + $tp1Dist : $entry - $tp1Dist, 5);
+            $tp2 = round($dir === 'buy' ? $entry + $tp2Dist : $entry - $tp2Dist, 5);
+            $takeProfit = round($dir === 'buy' ? $entry + $tp3Dist : $entry - $tp3Dist, 5);
+
+            $risk = $slDist;
+            $reward = $tp3Dist;
+
             $created[] = Signal::create([
                 'market_id'=>$market->id,'strategy'=>$strategy->code(),'timeframe'=>$timeframe,
-                'direction'=>$result['direction'],'entry'=>round($result['entry'],5),
-                'stop_loss'=>round($result['stop_loss'],5),'take_profit'=>round($result['take_profit'],5),
+                'direction'=>$dir,'entry'=>$entry,
+                'stop_loss'=>$stopLoss,'tp1'=>$tp1,'tp2'=>$tp2,'take_profit'=>$takeProfit,
                 'risk_reward'=>round($reward/$risk,2),'confidence'=>$result['confidence'],'status'=>'active',
                 'data_source'=>$market->data_source,'data_status'=>$market->data_status,
                 'feed_price'=>$last['close'],'generated_at'=>now(),'expires_at'=>$expiresAt,'note'=>$result['note'],

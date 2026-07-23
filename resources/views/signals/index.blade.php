@@ -38,7 +38,11 @@
                         <td><span class="badge {{ $signal->direction === 'buy' ? 'badge-buy' : 'badge-sell' }}">{{ strtoupper($signal->direction) }}</span></td>
                         <td>{{ number_format($signal->entry, $signal->market->precision()) }}</td>
                         <td class="down">{{ number_format($signal->stop_loss, $signal->market->precision()) }}</td>
-                        <td class="up">{{ number_format($signal->take_profit, $signal->market->precision()) }}</td>
+                        <td class="up">
+                            <small>{{ number_format($signal->tp1, $signal->market->precision()) }}</small><br>
+                            <small>{{ number_format($signal->tp2, $signal->market->precision()) }}</small><br>
+                            <strong>{{ number_format($signal->take_profit, $signal->market->precision()) }}</strong>
+                        </td>
                         <td>{{ number_format($signal->risk_reward, 1) }}</td>
                         <td><span class="feed-chip feed-{{ $signal->data_status }}">{{ strtoupper($signal->data_status ?? 'unknown') }} · {{ strtoupper($signal->data_source ?? 'unknown') }}</span></td>
                         <td class="muted">{{ optional($signal->expires_at)?->diffForHumans() ?? '—' }}</td>
@@ -47,7 +51,7 @@
                         </td>
                         <td class="muted" style="white-space: normal; min-width: 200px;">{{ $signal->note }}</td>
                         <td>
-                            <button class="btn btn-primary" style="padding: 4px 8px; font-size: 11px;" onclick="navigator.clipboard.writeText('{{ $signal->direction === 'buy' ? 'BUY' : 'SELL' }} {{ $signal->market->symbol }} \nEntry: {{ number_format($signal->entry, $signal->market->precision()) }} \nSL: {{ number_format($signal->stop_loss, $signal->market->precision()) }} \nTP: {{ number_format($signal->take_profit, $signal->market->precision()) }}').then(()=>alert('Copied to clipboard!'))">Copy</button>
+                            <button class="btn btn-primary" style="padding: 4px 8px; font-size: 11px;" onclick="navigator.clipboard.writeText('{{ $signal->direction === 'buy' ? 'BUY' : 'SELL' }} {{ $signal->market->symbol }} \nEntry: {{ number_format($signal->entry, $signal->market->precision()) }} \nSL: {{ number_format($signal->stop_loss, $signal->market->precision()) }} \nTP1: {{ number_format($signal->tp1, $signal->market->precision()) }} \nTP2: {{ number_format($signal->tp2, $signal->market->precision()) }} \nTP3: {{ number_format($signal->take_profit, $signal->market->precision()) }}').then(()=>alert('Copied to clipboard!'))">Copy</button>
                         </td>
                     </tr>
                 @empty

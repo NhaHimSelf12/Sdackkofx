@@ -43,7 +43,7 @@
             <div class="table-wrap">
                 <table class="table">
                     <thead>
-                    <tr><th>Strategy</th><th>Side</th><th>Entry</th><th>SL</th><th>TP</th><th>R:R</th><th>Feed</th><th>Status</th><th>Reasoning</th></tr>
+                    <tr><th>Strategy</th><th>Side</th><th>Entry</th><th>SL</th><th>TP 1/2/3</th><th>R:R</th><th>Feed</th><th>Status</th><th>Reasoning</th></tr>
                     </thead>
                     <tbody>
                     @forelse ($market->signals as $signal)
@@ -52,7 +52,11 @@
                             <td><span class="badge {{ $signal->direction === 'buy' ? 'badge-buy' : 'badge-sell' }}">{{ strtoupper($signal->direction) }}</span></td>
                             <td>{{ number_format($signal->entry, $market->precision()) }}</td>
                             <td class="down">{{ number_format($signal->stop_loss, $market->precision()) }}</td>
-                            <td class="up">{{ number_format($signal->take_profit, $market->precision()) }}</td>
+                            <td class="up">
+                                <small>{{ number_format($signal->tp1, $market->precision()) }}</small><br>
+                                <small>{{ number_format($signal->tp2, $market->precision()) }}</small><br>
+                                <strong>{{ number_format($signal->take_profit, $market->precision()) }}</strong>
+                            </td>
                             <td>{{ number_format($signal->risk_reward, 1) }}</td>
                             <td><span class="feed-chip feed-{{ $signal->data_status }}">{{ strtoupper($signal->data_status ?? 'unknown') }} · {{ strtoupper($signal->data_source ?? 'unknown') }}</span></td>
                             <td><span class="badge {{ $signal->status === 'active' ? 'badge-blue' : 'badge-neutral' }}">{{ ucfirst($signal->status) }}</span></td>

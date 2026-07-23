@@ -33,8 +33,8 @@
   if(!p){el.innerHTML='<div class="terminal-empty">No clear setup right now.<br>Staying flat is the plan.</div>';return}
   const rr=p.risk_reward?Number(p.risk_reward).toFixed(1):'—';
   el.innerHTML=`<div class="plan-decision ${p.direction==='buy'?'plan-buy':'plan-sell'}"><span>${p.direction==='buy'?'▲ BUY':'▼ SELL'} ${d.symbol}</span><b>${p.confidence}%</b></div>
-  <div class="plan-grid"><div><span>Entry</span><b>${formatPrice(p.entry)}</b></div><div><span>Stop loss</span><b class="down">${formatPrice(p.stop_loss)}</b></div><div><span>Take profit</span><b class="up">${formatPrice(p.take_profit)}</b></div><div><span>R:R</span><b>1:${rr}</b></div></div>
-  <div class="plan-note">${p.strategy} · ${p.note||''}</div>
+  <div class="plan-grid"><div><span>Entry</span><b>${formatPrice(p.entry)}</b></div><div><span>Stop loss</span><b class="down">${formatPrice(p.stop_loss)}</b></div><div style="grid-column: span 2"><span>Take Profit (1/2/3)</span><b class="up">${formatPrice(p.tp1)} / ${formatPrice(p.tp2)} / ${formatPrice(p.take_profit)}</b></div></div>
+  <div class="plan-note"><strong>R:R 1:${rr}</strong> · ${p.strategy} · ${p.note||''}</div>
   ${p.expires_at?`<div class="plan-expiry">Valid until ${new Date(p.expires_at*1000).toLocaleTimeString()}</div>`:''}`}
  function renderAnalysis(){const a=(state.data&&state.data.analysis)||{};const list=$('analysisList');
   $('analysisMeta').textContent=a.confidence?`${(a.bias||'').toUpperCase()} · ${a.confidence}%`:'';

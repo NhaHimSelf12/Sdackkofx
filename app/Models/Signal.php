@@ -9,7 +9,7 @@ class Signal extends Model
 {
     protected $fillable = [
         'market_id', 'strategy', 'direction', 'timeframe',
-        'entry', 'stop_loss', 'take_profit', 'risk_reward',
+        'entry', 'stop_loss', 'take_profit', 'tp1', 'tp2', 'risk_reward',
         'confidence', 'status', 'is_primary', 'data_source', 'data_status', 'feed_price',
         'generated_at', 'expires_at', 'note',
     ];
@@ -18,6 +18,8 @@ class Signal extends Model
         'entry' => 'float',
         'stop_loss' => 'float',
         'take_profit' => 'float',
+        'tp1' => 'float',
+        'tp2' => 'float',
         'risk_reward' => 'float',
         'feed_price' => 'float',
         'is_primary' => 'boolean',

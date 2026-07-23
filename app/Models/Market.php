@@ -46,4 +46,13 @@ class Market extends Model
             default => str_contains($this->symbol, 'JPY') ? 3 : 5,
         };
     }
+
+    /** The actual float value of 1 pip or 1 point for this market. */
+    public function pipSize(): float
+    {
+        return match ($this->category) {
+            'metals', 'crypto', 'indices' => 1.0,
+            default => str_contains($this->symbol, 'JPY') ? 0.01 : 0.0001,
+        };
+    }
 }

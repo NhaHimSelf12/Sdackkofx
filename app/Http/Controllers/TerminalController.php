@@ -23,7 +23,7 @@ class TerminalController extends Controller
         $seconds = match($tf){'M1'=>60,'M5'=>300,'M15'=>900,'H4'=>14400,'D1'=>86400,default=>3600};
         $active = $market->signals()->where('status','active')->where(fn($q)=>$q->whereNull('expires_at')->orWhere('expires_at','>',now()))->latest()->get();
         $signals = $active->map(fn($s)=>[
-            'direction'=>$s->direction,'strategy'=>$s->strategy,'entry'=>$s->entry,'stop_loss'=>$s->stop_loss,'take_profit'=>$s->take_profit,'risk_reward'=>$s->risk_reward,'confidence'=>$s->confidence,'is_primary'=>$s->is_primary,'note'=>$s->note,'generated_at'=>optional($s->generated_at)->timestamp,'expires_at'=>optional($s->expires_at)->timestamp,
+            'direction'=>$s->direction,'strategy'=>$s->strategy,'entry'=>$s->entry,'stop_loss'=>$s->stop_loss,'tp1'=>$s->tp1,'tp2'=>$s->tp2,'take_profit'=>$s->take_profit,'risk_reward'=>$s->risk_reward,'confidence'=>$s->confidence,'is_primary'=>$s->is_primary,'note'=>$s->note,'generated_at'=>optional($s->generated_at)->timestamp,'expires_at'=>optional($s->expires_at)->timestamp,
         ])->values();
         $primary = $signals->firstWhere('is_primary', true);
         $botTrades = EaBotTrade::with('bot')
