@@ -1,0 +1,24 @@
+/* EA Bots admin page */
+.ea-create h2{margin:0 0 12px;font-size:15px}
+.ea-mode-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-bottom:14px}
+.ea-mode-card{display:block;position:relative;border:1px solid var(--border);border-radius:10px;padding:12px 13px;cursor:pointer;background:var(--surface-2,transparent);transition:border-color .15s ease,transform .15s ease,box-shadow .15s ease}
+.ea-mode-card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,0,0,.14)}
+.ea-mode-card input{position:absolute;opacity:0;pointer-events:none}
+.ea-mode-card strong{display:block;font-size:13px;margin-bottom:3px}
+.ea-mode-quota{display:block;font-size:10px;color:var(--blue);letter-spacing:.03em;text-transform:uppercase;margin-bottom:6px}
+.ea-mode-card p{margin:0;font-size:11px;line-height:1.45;color:var(--text-3)}
+.ea-mode-card:has(input:checked){border-color:var(--blue);box-shadow:0 0 0 1px var(--blue) inset}
+.ea-form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:14px}
+.ea-form-grid label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--text-2);font-weight:600}
+.ea-form-grid input,.ea-form-grid select{background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:9px 10px;font-size:13px}
+.ea-hint{font-weight:400;font-size:10px;color:var(--text-3);line-height:1.4}
+.field-error{color:var(--red);font-weight:600;font-size:10px}
+.ea-actions{display:flex;gap:6px;flex-wrap:wrap}
+.ea-actions form{display:inline}
+.btn-small{padding:5px 9px;font-size:11px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer}
+.btn-small:hover{background:var(--hover)}
+.btn-danger{color:var(--red);border-color:color-mix(in srgb,var(--red) 45%,transparent)}
+@media(max-width:760px){.ea-mode-grid{grid-template-columns:1fr 1fr}}
+
+/* Why-no-entry note under each bot name */
+.ea-note{display:block;margin-top:4px;font-size:11px;line-height:1.45;font-weight:400;color:var(--text-muted,#8b93a7);max-width:260px;white-space:normal}

@@ -1,0 +1,41 @@
+/* FX Command V4 — dark/light theme system */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root{
+  --chart-bg:#121212;
+  --chart-grid:rgba(255,255,255,.04);
+  --chart-text:rgba(255,255,255,.4);
+  --chart-cross:rgba(255,255,255,.2);
+}
+
+[data-theme="light"]{
+  --bg:#f8f9fa;--surface:#ffffff;--raised:#f1f3f5;--hover:#e9ecef;
+  --text:#111827;--text-2:#4b5563;--text-3:#9ca3af;
+  --border:#e5e7eb;--border-strong:#d1d5db;
+  --blue:#2563eb;--green:#10b981;--orange:#f59e0b;--red:#ef4444;
+  --blue-soft:#dbeafe;--green-soft:#d1fae5;--orange-soft:#fef3c7;--red-soft:#fee2e2;
+  --chart-bg:#ffffff;--chart-grid:rgba(0,0,0,.04);--chart-text:rgba(0,0,0,.45);--chart-cross:rgba(0,0,0,.3);
+}
+
+[data-theme="light"] body{background:var(--bg);color:var(--text)}
+[data-theme="light"] .input{background:#fff;color:var(--text);border:1px solid var(--border)}
+[data-theme="light"] .card:hover{box-shadow:0 12px 36px rgba(0,0,0,.06)}
+[data-theme="light"] .grid-stats .card:hover,[data-theme="light"] .market-card:hover,[data-theme="light"] .strategy-grid .card:hover{box-shadow:0 14px 40px rgba(0,0,0,.08)}
+[data-theme="light"] .btn-primary{color:#fff;background:linear-gradient(135deg, var(--blue), #1e40af)}
+[data-theme="light"] .sidebar,[data-theme="light"] .main{background:var(--bg)}
+[data-theme="light"] body.public-body{background:#f9fafb;color:var(--text)}
+[data-theme="light"] .public-nav{background:rgba(255,255,255,.8);border-bottom-color:var(--border)}
+[data-theme="light"] .public-nav nav a:hover{color:var(--blue)}
+[data-theme="light"] .hero-terminal{background:#fff;box-shadow:0 30px 100px rgba(0,0,0,.1)}
+[data-theme="light"] .feature-card{background:linear-gradient(135deg, #ffffff, #f3f4f6)}
+[data-theme="light"] .mock-grid{stroke:rgba(0,0,0,.05)}
+[data-theme="light"] .auth-body{background:radial-gradient(circle at 50% 0,rgba(37,99,235,.08),transparent 40%),#f8f9fa}
+[data-theme="light"] .public-cta{background:radial-gradient(circle at 80% 20%,rgba(37,99,235,.1),transparent 50%),#fff}
+
+.theme-toggle{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:6px 14px;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,0.05);color:var(--text-2);font:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .3s ease;backdrop-filter:blur(8px)}
+[data-theme="light"] .theme-toggle{background:rgba(0,0,0,0.05)}
+.theme-toggle:hover{background:var(--hover);color:var(--text);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.theme-toggle .theme-icon{width:16px;height:16px;border-radius:50%;border:2px solid currentColor;position:relative;overflow:hidden}
+.theme-toggle .theme-icon::after{content:'';position:absolute;inset:0;left:50%;background:currentColor;transition:all 0.3s ease}
+.sidebar-footer .theme-toggle{width:100%;justify-content:center;margin-top:12px}
+.auth-theme-toggle{position:fixed;top:20px;right:20px;z-index:30}

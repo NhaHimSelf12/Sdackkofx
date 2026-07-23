@@ -1,0 +1,29 @@
+{
+    "name": "dapanha/forex-management-system",
+    "description": "FX Command - Forex management system with AI market analysis, news analysis, trading strategies (SMC, ICT, MSNR), entry signals and trendline detection.",
+    "type": "project",
+    "require": {
+        "php": "^8.2",
+        "guzzlehttp/guzzle": "^7.8",
+        "laravel/framework": "^12.0",
+        "laravel/socialite": "^5.29"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.23",
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
