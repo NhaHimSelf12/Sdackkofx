@@ -32,6 +32,12 @@ $_SERVER['VIEW_COMPILED_PATH'] = '/tmp/storage/framework/views';
 
 require __DIR__.'/../vendor/autoload.php';
 
-$app = require_once __DIR__.'/../bootstrap/app.php';
-$app->useStoragePath('/tmp/storage');
-$app->handleRequest(Request::capture());
+try {
+    $app = require_once __DIR__.'/../bootstrap/app.php';
+    $app->useStoragePath('/tmp/storage');
+    $app->handleRequest(Request::capture());
+} catch (\Throwable $e) {
+    echo "<h1>Vercel PHP Error</h1>";
+    echo "<pre>" . $e->getMessage() . "</pre>";
+    echo "<pre>" . $e->getTraceAsString() . "</pre>";
+}
