@@ -503,6 +503,9 @@ html[data-theme="light"] body.public-body{
   z-index:-2;opacity:0.5;
   pointer-events:none;
 }
+@media (max-width: 768px) {
+  .hero-bg-anim { display: none; }
+}
 .hero-bg-anim svg {
   width:100%;height:100%;
 }
