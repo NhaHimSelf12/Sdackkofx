@@ -28,6 +28,9 @@ class PublicController extends Controller
 
     public function learn()
     {
+        if (auth()->check()) {
+            return redirect()->route('lessons.index');
+        }
         return view('public_lesson');
     }
 }

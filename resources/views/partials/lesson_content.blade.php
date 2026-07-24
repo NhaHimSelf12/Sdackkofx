@@ -1,4 +1,10 @@
-<div class="grid-main" style="display: grid; grid-template-columns: 280px 1fr; gap: 24px; align-items: start;">
+<style>
+    .lesson-grid-main { display: grid; gap: 24px; align-items: start; }
+    @media (min-width: 1024px) {
+        .lesson-grid-main { grid-template-columns: 280px 1fr; }
+    }
+</style>
+<div class="lesson-grid-main">
     <!-- Sidebar for Lessons -->
     <div class="card sidebar-nav" style="padding: 0; position: sticky; top: 100px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
         <div style="padding: 20px; border-bottom: 1px solid var(--border); font-weight: 800; font-size: 18px; color: var(--text); background: linear-gradient(135deg, var(--blue-soft), transparent);">

@@ -1,6 +1,7 @@
 <!DOCTYPE html><html lang="km"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Register · Nha FX</title><link rel="stylesheet" href="{{ asset('css/app.css') }}"><link rel="stylesheet" href="{{ asset('css/v2.css') }}"><link rel="stylesheet" href="{{ asset('css/theme.css') }}"><script src="{{ asset('js/theme.js') }}"></script>
 <style>
 .hero-bg-anim{position:fixed;top:0;bottom:0;left:0;right:0;z-index:0;opacity:0.4;pointer-events:none;}
+@media (max-width: 768px) { .hero-bg-anim { display: none; } }
 .hero-bg-anim svg{width:100%;height:100%;}
 .auth-theme-toggle { position: relative; z-index: 10; }
 </style>
