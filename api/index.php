@@ -40,7 +40,7 @@ try {
     $app->useStoragePath('/tmp/storage');
     
     // Inject a custom exception handler to see the ORIGINAL error
-    $app->singleton(
+    $app->instance(
         Illuminate\Contracts\Debug\ExceptionHandler::class,
         new class($app) extends Illuminate\Foundation\Exceptions\Handler {
             public function render($request, \Throwable $e) {
