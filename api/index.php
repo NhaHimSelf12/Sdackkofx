@@ -38,6 +38,20 @@ require __DIR__.'/../vendor/autoload.php';
 try {
     $app = require_once __DIR__.'/../bootstrap/app.php';
     $app->useStoragePath('/tmp/storage');
+    
+    // Inject a custom exception handler to see the ORIGINAL error
+    $app->singleton(
+        Illuminate\Contracts\Debug\ExceptionHandler::class,
+        new class($app) extends Illuminate\Foundation\Exceptions\Handler {
+            public function render($request, \Throwable $e) {
+                echo "<h1>ORIGINAL ERROR FOUND:</h1>";
+                echo "<pre>" . $e->getMessage() . "</pre>";
+                echo "<pre>" . $e->getTraceAsString() . "</pre>";
+                exit;
+            }
+        }
+    );
+
     $app->handleRequest(Request::capture());
 } catch (\Throwable $e) {
     echo "<h1>Vercel PHP Error</h1>";
