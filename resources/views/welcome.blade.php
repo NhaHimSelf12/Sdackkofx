@@ -23,6 +23,7 @@
 		<a href="#strategies">Strategy</a>
 		<a href="#news">News</a>
 		<a href="{{ route('public.learn') }}">Learn</a>
+		<a href="#" onclick="document.getElementById('supportModal').style.display='flex'; return false;" style="color: var(--green);">Support me ☕</a>
 	</nav>
 	<div class="nav-actions">
 		<button class="theme-toggle" type="button" aria-label="Toggle theme"><span class="theme-icon"></span></button>
@@ -419,5 +420,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+@include('partials.support_modal')
 </body>
 </html>

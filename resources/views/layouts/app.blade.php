@@ -41,6 +41,7 @@
         @endif
         <div class="nav-divider"></div>
         <a href="{{ route('home') }}" style="color: var(--blue);">← Back to Website</a>
+        <a href="#" onclick="document.getElementById('supportModal').style.display='flex'; return false;" style="color: var(--green);">Support me ☕</a>
     </nav>
     <div class="sidebar-footer">
         <div><span class="dot dot-green"></span>AI engine online</div>
@@ -58,6 +59,7 @@
 </main>
 <script src="{{ asset('js/app.js') }}" defer></script>
 @stack('scripts')
+@include('partials.support_modal')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const toggle = document.getElementById('mobileToggle');

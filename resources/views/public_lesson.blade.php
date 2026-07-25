@@ -23,6 +23,7 @@
             <a href="{{ route('home') }}#strategies">Strategy</a>
             <a href="{{ route('home') }}#news">News</a>
             <a href="{{ route('public.learn') }}" style="color: var(--blue);">Learn</a>
+            <a href="#" onclick="document.getElementById('supportModal').style.display='flex'; return false;" style="color: var(--green);">Support me ☕</a>
         </nav>
         <div class="nav-actions" style="margin-left: auto;">
             <button class="theme-toggle" type="button" aria-label="Toggle theme"><span class="theme-icon"></span></button>
@@ -46,5 +47,6 @@
     </footer>
 
     <script src="{{ asset('js/public.js') }}" defer></script>
+    @include('partials.support_modal')
 </body>
 </html>
