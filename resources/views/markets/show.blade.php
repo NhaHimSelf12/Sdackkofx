@@ -130,8 +130,8 @@
     let lineSeries = [];
     async function loadChart(timeframe) {
       const [candles, trendlines] = await Promise.all([
-          fetch('{{ route('api.candles', $market) }}?timeframe=' + timeframe).then(r => r.json()),
-          fetch('{{ route('api.trendlines', $market) }}?timeframe=' + timeframe).then(r => r.json()),
+          fetch('{{ route('api.candles', $market, false) }}?timeframe=' + timeframe).then(r => r.json()),
+          fetch('{{ route('api.trendlines', $market, false) }}?timeframe=' + timeframe).then(r => r.json()),
       ]);
       candleSeries.setData(candles);
       lineSeries.forEach(s => chart.removeSeries(s)); lineSeries = [];
