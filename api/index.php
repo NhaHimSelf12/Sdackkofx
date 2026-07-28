@@ -21,11 +21,12 @@ foreach ($directories as $dir) {
 // Copy SQLite DB to /tmp if it exists so it is writable (temporary only)
 $dbSource = __DIR__.'/../database/database.sqlite';
 $dbTemp = '/tmp/database.sqlite';
-if (file_exists($dbSource) && !file_exists($dbTemp)) {
-    copy($dbSource, $dbTemp);
+if (getenv('DB_CONNECTION') === 'sqlite' || !getenv('DB_CONNECTION')) {
+    if (file_exists($dbSource) && !file_exists($dbTemp)) {
+        copy($dbSource, $dbTemp);
+    }
+    $_ENV['DB_DATABASE'] = $dbTemp;
 }
-
-$_ENV['DB_DATABASE'] = $dbTemp;
 $_ENV['APP_STORAGE'] = '/tmp/storage';
 $_ENV['VIEW_COMPILED_PATH'] = '/tmp/storage/framework/views';
 $_SERVER['APP_STORAGE'] = '/tmp/storage';
