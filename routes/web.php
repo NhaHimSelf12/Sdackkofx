@@ -20,6 +20,11 @@ Route::get('/', [PublicController::class, 'index'])->name('home');
 Route::get('/strategy/{publicStrategy}', [PublicController::class, 'showStrategy'])->name('public.strategy.show');
 Route::get('/learn', [PublicController::class, 'learn'])->name('public.learn');
 
+Route::get('/setup-db', function () {
+    \Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--seed' => true, '--force' => true]);
+    return "Database setup complete! " . \Illuminate\Support\Facades\Artisan::output();
+});
+
 // Google Auth Routes
 Route::get('auth/google', [\App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [\App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback']);
