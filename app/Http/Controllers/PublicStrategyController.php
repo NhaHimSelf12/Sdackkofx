@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\PublicStrategy;
+use App\Services\ImgBBService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class PublicStrategyController extends Controller
 {
@@ -22,22 +22,29 @@ class PublicStrategyController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'images.*' => 'nullable|image|max:2048',
+            'title'      => 'required|string|max:255',
+            'description'=> 'nullable|string',
+            'images.*'   => 'nullable|image|max:4096',
         ]);
 
         $imagePaths = [];
         if ($request->hasFile('images')) {
+            $imgbb = new ImgBBService();
             foreach ($request->file('images') as $image) {
-                $imagePaths[] = $image->store('strategies', 'public');
+                $url = $imgbb->upload($image);
+                if ($url) {
+                    $imagePaths[] = $url;
+                } else {
+                    // Fallback to local storage
+                    $imagePaths[] = asset('storage/' . $image->store('strategies', 'public'));
+                }
             }
         }
 
         PublicStrategy::create([
-            'title' => $request->title,
+            'title'       => $request->title,
             'description' => $request->description,
-            'images' => $imagePaths,
+            'images'      => $imagePaths,
         ]);
 
         return redirect()->route('admin.public-strategies.index')->with('success', 'Strategy created successfully.');
@@ -51,30 +58,39 @@ class PublicStrategyController extends Controller
     public function update(Request $request, PublicStrategy $publicStrategy)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'images.*' => 'nullable|image|max:2048',
+            'title'      => 'required|string|max:255',
+            'description'=> 'nullable|string',
+            'images.*'   => 'nullable|image|max:4096',
         ]);
 
         $imagePaths = $publicStrategy->images ?? [];
 
         if ($request->has('remove_images')) {
             foreach ($request->remove_images as $removePath) {
-                Storage::disk('public')->delete($removePath);
+                // Only delete local files (not ImgBB URLs)
+                if (!str_starts_with($removePath, 'http')) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($removePath);
+                }
                 $imagePaths = array_values(array_diff($imagePaths, [$removePath]));
             }
         }
 
         if ($request->hasFile('images')) {
+            $imgbb = new ImgBBService();
             foreach ($request->file('images') as $image) {
-                $imagePaths[] = $image->store('strategies', 'public');
+                $url = $imgbb->upload($image);
+                if ($url) {
+                    $imagePaths[] = $url;
+                } else {
+                    $imagePaths[] = asset('storage/' . $image->store('strategies', 'public'));
+                }
             }
         }
 
         $publicStrategy->update([
-            'title' => $request->title,
+            'title'       => $request->title,
             'description' => $request->description,
-            'images' => $imagePaths,
+            'images'      => $imagePaths,
         ]);
 
         return redirect()->route('admin.public-strategies.index')->with('success', 'Strategy updated successfully.');
@@ -82,12 +98,9 @@ class PublicStrategyController extends Controller
 
     public function destroy(PublicStrategy $publicStrategy)
     {
-        if ($publicStrategy->images) {
-            foreach ($publicStrategy->images as $path) {
-                Storage::disk('public')->delete($path);
-            }
-        }
+        // ImgBB images are managed externally, no local deletion needed
         $publicStrategy->delete();
         return redirect()->route('admin.public-strategies.index')->with('success', 'Strategy deleted successfully.');
     }
 }
+

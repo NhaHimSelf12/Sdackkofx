@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ImgBBService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -17,7 +18,7 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name'   => 'required|string|max:255',
             'avatar' => 'nullable|image|max:2048',
         ]);
 
@@ -25,12 +26,20 @@ class ProfileController extends Controller
         $user->name = $request->name;
 
         if ($request->hasFile('avatar')) {
-            // Delete old avatar if exists
-            if ($user->avatar) {
-                Storage::disk('public')->delete($user->avatar);
+            $imgbb = new ImgBBService();
+            $url = $imgbb->upload($request->file('avatar'));
+
+            if ($url) {
+                // Uploaded to ImgBB successfully
+                $user->avatar = $url;
+            } else {
+                // Fallback: store locally (works on localhost, not on Vercel)
+                if ($user->avatar && !str_starts_with($user->avatar, 'http')) {
+                    Storage::disk('public')->delete($user->avatar);
+                }
+                $path = $request->file('avatar')->store('avatars', 'public');
+                $user->avatar = $path;
             }
-            $path = $request->file('avatar')->store('avatars', 'public');
-            $user->avatar = $path;
         }
 
         $user->save();
@@ -38,3 +47,4 @@ class ProfileController extends Controller
         return redirect()->back()->with('success', 'Profile updated successfully.');
     }
 }
+
