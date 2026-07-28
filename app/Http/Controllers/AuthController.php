@@ -30,7 +30,7 @@ class AuthController extends Controller
             'password' => ['required', 'min:8', 'confirmed'],
         ]);
         $user = User::create([...$data, 'password' => Hash::make($data['password'])]);
-        Auth::login($user);
+        Auth::login($user, remember: true);
         return redirect()->route('dashboard');
     }
 
