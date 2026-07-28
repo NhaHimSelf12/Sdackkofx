@@ -30,7 +30,7 @@
 		@auth
             <a href="{{ route('dashboard') }}" class="public-profile-link" style="display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--text); font-weight:600; padding:4px 12px 4px 4px; background:var(--raised); border-radius:999px; border:1px solid var(--border); transition:border-color 0.2s;">
                 @if(auth()->user()->avatar)
-                    <img src="{{ auth()->user()->avatar }}" alt="Avatar" style="width:28px; height:28px; border-radius:50%; object-fit:cover; border:1px solid var(--border);">
+                    <img src="{{ str_starts_with(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar) }}" alt="Avatar" style="width:28px; height:28px; border-radius:50%; object-fit:cover; border:1px solid var(--border);">
                 @else
                     <div style="width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg, var(--blue), #7c5cff); color:#fff; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; text-transform:uppercase;">
                         {{ substr(auth()->user()->name, 0, 1) }}
@@ -250,7 +250,7 @@
 					@if($strategy->images && count($strategy->images) > 0)
 						<div class="strategy-media">
 							@foreach($strategy->images as $img)
-								<img src="{{ asset('storage/'.$img) }}" alt="{{ $strategy->title }}" loading="lazy">
+								<img src="{{ str_starts_with($img, 'http') ? $img : asset('storage/'.$img) }}" alt="{{ $strategy->title }}" loading="lazy">
 							@endforeach
 						</div>
 					@else

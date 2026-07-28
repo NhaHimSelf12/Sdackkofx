@@ -62,7 +62,7 @@
             @if($publicStrategy->images && count($publicStrategy->images) > 0)
                 @foreach($publicStrategy->images as $img)
                     <div class="strategy-image-container reveal">
-                        <img src="{{ asset('storage/'.$img) }}" alt="{{ $publicStrategy->title }} Image {{ $loop->iteration }}" onclick="openModal(this.src)">
+                        <img src="{{ str_starts_with($img, 'http') ? $img : asset('storage/'.$img) }}" alt="{{ $publicStrategy->title }} Image {{ $loop->iteration }}" onclick="openModal(this.src)">
                     </div>
                 @endforeach
             @else

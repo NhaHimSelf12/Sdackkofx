@@ -24,7 +24,7 @@
                 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                     @foreach($publicStrategy->images as $index => $img)
                         <div style="position: relative; width: 120px; height: 100px;">
-                            <img src="{{ asset('storage/'.$img) }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid var(--border);">
+                            <img src="{{ str_starts_with($img, 'http') ? $img : asset('storage/'.$img) }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid var(--border);">
                             <label style="display: block; margin-top: 5px; font-size: 12px; color: var(--red);">
                                 <input type="checkbox" name="remove_images[]" value="{{ $img }}"> Remove
                             </label>

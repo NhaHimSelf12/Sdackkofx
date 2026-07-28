@@ -34,7 +34,7 @@
                         @if($strategy->images)
                             <div style="display: flex; gap: 5px;">
                                 @foreach(array_slice($strategy->images, 0, 3) as $img)
-                                    <img src="{{ asset('storage/'.$img) }}" style="width: 40px; height: 30px; object-fit: cover; border-radius: 4px;">
+                                    <img src="{{ str_starts_with($img, 'http') ? $img : asset('storage/'.$img) }}" style="width: 40px; height: 30px; object-fit: cover; border-radius: 4px;">
                                 @endforeach
                                 @if(count($strategy->images) > 3)
                                     <span style="font-size: 11px; background: var(--hover); padding: 5px; border-radius: 4px;">+{{ count($strategy->images) - 3 }}</span>
