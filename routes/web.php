@@ -20,6 +20,24 @@ Route::get('/', [PublicController::class, 'index'])->name('home');
 Route::get('/strategy/{publicStrategy}', [PublicController::class, 'showStrategy'])->name('public.strategy.show');
 Route::get('/learn', [PublicController::class, 'learn'])->name('public.learn');
 
+Route::get('/db-test', function () {
+    return response()->json([
+        'env_DB_CONNECTION' => $_ENV['DB_CONNECTION'] ?? 'not set',
+        'server_DB_CONNECTION' => $_SERVER['DB_CONNECTION'] ?? 'not set',
+        'getenv_DB_CONNECTION' => getenv('DB_CONNECTION'),
+        'config_default' => config('database.default'),
+        'config_url' => config('database.connections.pgsql.url'),
+    ]);
+});
+
+Route::get('/setup-db', function () {
+    if (config('database.default') !== 'pgsql') {
+        return "ERROR: Database is not using pgsql! It is using: " . config('database.default');
+    }
+    \Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--seed' => true, '--force' => true]);
+    return "Database setup complete! " . \Illuminate\Support\Facades\Artisan::output();
+});
+
 // Google Auth Routes
 Route::get('auth/google', [\App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [\App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback']);
