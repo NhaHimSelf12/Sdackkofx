@@ -11,7 +11,7 @@ class ImgBBService
 
     public function __construct()
     {
-        $this->apiKey = config('services.imgbb.key', '');
+        $this->apiKey = env('IMGBB_API_KEY', config('services.imgbb.key', ''));
     }
 
     /**
