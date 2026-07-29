@@ -107,7 +107,7 @@
                                     <strong>{{ number_format($signal->take_profit, $signal->market->precision()) }}</strong>
                                 </td>
                                 <td>{{ number_format($signal->risk_reward, 1) }}</td>
-                                <td><span class="feed-chip feed-{{ $signal->data_status }}">{{ strtoupper($signal->data_status ?? 'unknown') }} · {{ strtoupper($signal->data_source ?? 'unknown') }}</span></td>
+                                <td><span class="feed-chip feed-{{ $signal->data_status }}">{{ strtoupper($signal->data_status ?? 'unknown') }}{{ ($signal->data_source ?? '') === 'yahoo' ? '' : ' · ' . strtoupper($signal->data_source ?? 'unknown') }}</span></td>
                                 <td class="muted">{{ $signal->confidence }}%</td>
                             </tr>
                         @empty
