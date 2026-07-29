@@ -197,7 +197,7 @@
 					<div><strong>{{ $market->symbol }}</strong><span>{{ $market->name }}</span></div>
 					<b>{{ number_format($market->price,$market->precision()) }}</b>
 					<span class="{{ $market->change_pct>=0?'up':'down' }}">{{ $market->change_pct>=0?'▲':'▼' }} {{ number_format(abs($market->change_pct),2) }}%</span>
-					<small class="feed-{{ $market->data_status }}">{{ strtoupper($market->data_status.' · '.$market->data_source) }}</small>
+					<small class="feed-{{ $market->data_status }}">{{ strtoupper($market->data_status) }}</small>
 				</article>
 			@endforeach
 		</div>

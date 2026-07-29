@@ -20,14 +20,14 @@
     @if(($market->data_status ?? 'demo') === 'demo')
         <div class="feed-warning"><strong>Demo market feed.</strong> Remote price providers failed. This price is not current. Run <code>php artisan forex:feed-check {{ $market->symbol }} --fresh</code> to see the provider error, or configure <code>TWELVEDATA_API_KEY</code>.</div>
     @elseif(($market->data_status ?? '') === 'delayed')
-        <div class="feed-notice">Market data from {{ strtoupper($market->data_source) }} may be delayed. Last fetched {{ optional($market->price_fetched_at)?->diffForHumans() }}.</div>
+        <div class="feed-notice">Market data may be delayed. Last fetched {{ optional($market->price_fetched_at)?->diffForHumans() }}.</div>
     @endif
 
     <div class="card chart-card">
         <div class="chart-toolbar">
             <div class="timeframe-switch" role="group" aria-label="Chart timeframe">
                 @foreach(['M15','H1','H4','D1'] as $tf)<button class="tf-btn {{ $tf==='H1'?'active':'' }}" data-tf="{{ $tf }}">{{ $tf }}</button>@endforeach
-                <span class="feed-label feed-{{ $market->data_status ?? 'demo' }}"><i class="dot {{ in_array($market->data_status, ['live','delayed']) ? 'dot-green' : '' }}"></i>{{ strtoupper($market->data_status ?? 'demo') }} · {{ strtoupper($market->data_source ?? 'demo') }}</span>
+                <span class="feed-label feed-{{ $market->data_status ?? 'demo' }}"><i class="dot {{ in_array($market->data_status, ['live','delayed']) ? 'dot-green' : '' }}"></i>{{ strtoupper($market->data_status ?? 'demo') }}</span>
             </div>
             <div class="chart-legend">
                 <span><span class="legend-swatch" style="background:#72bc8f"></span>Buy trendline / support</span>
@@ -58,7 +58,7 @@
                                 <strong>{{ number_format($signal->take_profit, $market->precision()) }}</strong>
                             </td>
                             <td>{{ number_format($signal->risk_reward, 1) }}</td>
-                            <td><span class="feed-chip feed-{{ $signal->data_status }}">{{ strtoupper($signal->data_status ?? 'unknown') }} · {{ strtoupper($signal->data_source ?? 'unknown') }}</span></td>
+                            <td><span class="feed-chip feed-{{ $signal->data_status }}">{{ strtoupper($signal->data_status ?? 'unknown') }}</span></td>
                             <td><span class="badge {{ $signal->status === 'active' ? 'badge-blue' : 'badge-neutral' }}">{{ ucfirst($signal->status) }}</span></td>
                             <td class="muted" style="white-space: normal; min-width: 220px;">{{ $signal->note }}</td>
                         </tr>

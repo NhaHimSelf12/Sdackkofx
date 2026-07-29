@@ -14,7 +14,7 @@
       @foreach(['M1','M5','M15','H1','H4','D1'] as $tf)<button class="tf-button {{ $tf==='M1'?'active':'' }}" data-timeframe="{{ $tf }}">{{ $tf }}</button>@endforeach
     </div>
     <div class="candle-clock"><span>Next candle</span><strong id="candleCountdown">--:--</strong></div>
-    <div id="feedBadge" class="feed-chip feed-{{ $market->data_status }}">{{ strtoupper($market->data_status.' · '.$market->data_source) }}</div>
+    <div id="feedBadge" class="feed-chip feed-{{ $market->data_status }}">{{ strtoupper($market->data_status) }}</div>
   </div>
 
   <div class="indicator-bar card">
