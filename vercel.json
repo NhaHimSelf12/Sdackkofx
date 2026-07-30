@@ -24,10 +24,6 @@
             "dest": "/public/images/$1"
         },
         {
-            "src": "/sneat/(.*)",
-            "dest": "/public/sneat/$1"
-        },
-        {
             "src": "/(.*)",
             "dest": "/api/index.php"
         }
