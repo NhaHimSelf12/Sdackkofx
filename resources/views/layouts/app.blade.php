@@ -25,8 +25,8 @@
 
     <!-- Core CSS -->
     <link rel="stylesheet" href="{{ asset('sneat/vendor/css/core.css') }}" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="{{ asset('sneat/vendor/css/theme-default.css') }}" class="template-customizer-theme-css" />
     <link rel="stylesheet" href="{{ asset('sneat/css/demo.css') }}" />
+    <link rel="stylesheet" href="{{ asset('sneat/css/dark.css') }}" />
 
     <!-- Vendors CSS -->
     <link rel="stylesheet" href="{{ asset('sneat/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
@@ -173,6 +173,14 @@
                 <li class="nav-item lh-1 me-3">
                   <a href="{{ route('home') }}" class="btn btn-sm btn-outline-primary">Back to Website</a>
                 </li>
+                <!-- Theme Style Switcher -->
+                <li class="nav-item me-3">
+                  <a class="nav-link theme-toggle" href="javascript:void(0);" onclick="toggleTheme()">
+                    <i class="bx bx-moon bx-sm" id="theme-icon"></i>
+                  </a>
+                </li>
+                <!-- / Theme Style Switcher -->
+
                 @auth
                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
                   <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
@@ -263,5 +271,35 @@
     <script src="{{ asset('sneat/js/main.js') }}"></script>
 
     @stack('scripts')
+    <script>
+      function toggleTheme() {
+        const html = document.documentElement;
+        if (html.classList.contains('dark-style')) {
+          localStorage.setItem('theme', 'light');
+        } else {
+          localStorage.setItem('theme', 'dark');
+        }
+        window.location.reload(); // Reload to apply theme to charts
+      }
+
+      // Initialize theme on load
+      (function() {
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+        
+        const html = document.documentElement;
+        const icon = document.getElementById('theme-icon');
+        
+        if (isDark) {
+          html.classList.remove('light-style');
+          html.classList.add('dark-style');
+          if (icon) {
+            icon.classList.remove('bx-moon');
+            icon.classList.add('bx-sun');
+          }
+        }
+      })();
+    </script>
   </body>
 </html>

@@ -80,7 +80,7 @@
                 <div id="tradingview_chart" style="height: 100%; width: 100%;"></div>
                 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
                 <script type="text/javascript">
-                var currentTheme = 'light'; // Using Sneat default light theme
+                var currentTheme = document.documentElement.classList.contains('dark-style') ? 'dark' : 'light';
                 new TradingView.widget({
                 "autosize": true,
                 "symbol": "{{ $market->symbol == 'XAUUSD' ? 'OANDA:XAUUSD' : 'FX:'.$market->symbol }}",
@@ -91,7 +91,7 @@
                 "locale": "en",
                 "enable_publishing": false,
                 "backgroundColor": "rgba(0, 0, 0, 0)",
-                "gridColor": "rgba(0, 0, 0, 0.05)",
+                "gridColor": currentTheme === 'dark' ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.05)",
                 "hide_top_toolbar": false,
                 "hide_legend": false,
                 "save_image": false,

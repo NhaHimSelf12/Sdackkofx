@@ -182,15 +182,15 @@
 <script>
 (async function () {
     const el = document.getElementById('chart');
-    // For light mode Sneat, using light theme chart
+    const isDark = document.documentElement.classList.contains('dark-style');
     const chart = LightweightCharts.createChart(el, {
-        layout: { background: { color: 'transparent' }, textColor: '#566a7f' },
+        layout: { background: { color: 'transparent' }, textColor: isDark ? '#a3a4cc' : '#566a7f' },
         grid: {
-            vertLines: { color: 'rgba(0,0,0,0.05)' },
-            horzLines: { color: 'rgba(0,0,0,0.05)' },
+            vertLines: { color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
+            horzLines: { color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
         },
-        rightPriceScale: { borderColor: 'rgba(0,0,0,0.1)' },
-        timeScale: { borderColor: 'rgba(0,0,0,0.1)', timeVisible: true },
+        rightPriceScale: { borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' },
+        timeScale: { borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)', timeVisible: true },
         crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
         autoSize: true,
     });
