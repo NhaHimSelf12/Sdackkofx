@@ -329,9 +329,11 @@ table.table tr:hover td { background: rgba(255, 255, 255, 0.02); }
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border); 
-    position: sticky; 
+    position: fixed; 
     top: 0; 
-    z-index: 30; 
+    left: 0;
+    width: 100%;
+    z-index: 40; 
   }
   .mobile-toggle { background: transparent; border: none; color: var(--text); cursor: pointer; padding: 8px; margin: -8px; }
   .sidebar-overlay { display: block; }
@@ -348,7 +350,7 @@ table.table tr:hover td { background: rgba(255, 255, 255, 0.02); }
   }
   .sidebar.open { left: 0; }
   .sidebar .brand { display: none; }
-  .main { margin-left: 0; padding: 24px 16px 80px; }
+  .main { margin-left: 0; padding: 80px 16px 80px; }
   .market-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .grid-stats { grid-template-columns: 1fr; gap: 12px; }
   .page-head .price-big { font-size: 26px; line-height: 1.2; }
