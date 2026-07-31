@@ -320,7 +320,19 @@ table.table tr:hover td { background: rgba(255, 255, 255, 0.02); }
 .sidebar-overlay.open { opacity: 1; pointer-events: auto; }
 
 @media (max-width: 760px) {
-  .mobile-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 30; }
+  .mobile-header { 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 14px 20px; 
+    background: rgba(32, 32, 32, 0.85); 
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border); 
+    position: sticky; 
+    top: 0; 
+    z-index: 30; 
+  }
   .mobile-toggle { background: transparent; border: none; color: var(--text); cursor: pointer; padding: 8px; margin: -8px; }
   .sidebar-overlay { display: block; }
   
@@ -335,11 +347,17 @@ table.table tr:hover td { background: rgba(255, 255, 255, 0.02); }
     box-shadow: 0 0 20px rgba(0,0,0,0.1);
   }
   .sidebar.open { left: 0; }
-  .sidebar .brand { display: none; } /* Hide brand in sidebar since it's in mobile header */
-  .main { margin-left: 0; padding: 16px 12px 48px; }
+  .sidebar .brand { display: none; }
+  .main { margin-left: 0; padding: 24px 16px 80px; }
   .market-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  .grid-stats { grid-template-columns: 1fr; }
-  .page-head .price-big { font-size: 24px; }
+  .grid-stats { grid-template-columns: 1fr; gap: 12px; }
+  .page-head .price-big { font-size: 26px; line-height: 1.2; }
+  .topbar { margin-bottom: 20px; flex-direction: column; gap: 8px; align-items: flex-start; }
+  .topbar h1 { font-size: 22px; }
+  .card { padding: 16px; border-radius: 10px; }
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--border); border-radius: 8px; border-left: none; border-right: none; }
+  table.table th, table.table td { padding: 12px 10px; font-size: 13.5px; }
+  .news-title { font-size: 15px; }
 }
 @media (max-width: 480px) {
   .market-grid { grid-template-columns: 1fr; }
