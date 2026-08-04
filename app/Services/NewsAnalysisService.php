@@ -75,9 +75,14 @@ class NewsAnalysisService
             
             // Try to translate to Khmer
             try {
+                // Add a small delay to prevent Google Translate API rate limiting (429 Too Many Requests)
+                usleep(500000); // 0.5 seconds
                 $kmTitle = $tr->translate($article['title'] ?? '');
+                
+                usleep(500000); // 0.5 seconds
                 $kmSummary = $tr->translate($article['description'] ?? '');
             } catch (\Throwable $e) {
+                Log::error('Translation error: ' . $e->getMessage());
                 $kmTitle = '';
                 $kmSummary = '';
             }
