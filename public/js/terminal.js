@@ -32,22 +32,88 @@
   if(d.feed.status==='demo'){el.innerHTML='<div class="terminal-empty">DEMO feed — no trade plan is generated.</div>';return}
   if(!p){el.innerHTML='<div class="terminal-empty">No clear setup right now.<br>Staying flat is the plan.</div>';return}
   const rr=p.risk_reward?Number(p.risk_reward).toFixed(1):'—';
-  el.innerHTML=`<div class="plan-decision ${p.direction==='buy'?'plan-buy':'plan-sell'}"><span>${p.direction==='buy'?'▲ BUY':'▼ SELL'} ${d.symbol}</span><b>${p.confidence}%</b></div>
-  <div class="plan-grid"><div><span>Entry</span><b>${formatPrice(p.entry)}</b></div><div><span>Stop loss</span><b class="down">${formatPrice(p.stop_loss)}</b></div><div style="grid-column: span 2"><span>Take Profit (1/2/3)</span><b class="up">${formatPrice(p.tp1)} / ${formatPrice(p.tp2)} / ${formatPrice(p.take_profit)}</b></div></div>
-  <div class="plan-note"><strong>R:R 1:${rr}</strong> · ${p.strategy} · ${p.note||''}</div>
-  ${p.expires_at?`<div class="plan-expiry">Valid until ${new Date(p.expires_at*1000).toLocaleTimeString()}</div>`:''}`}
+  const up = p.direction === 'buy';
+  el.innerHTML=`
+    <div class="flex items-center justify-between gap-3 mb-4">
+      <span class="text-[12px] font-bold px-2.5 py-1 rounded-md ${up?'text-[var(--up)] bg-[var(--up)]/12 border border-[var(--up)]/25':'text-[var(--down)] bg-[var(--down)]/12 border border-[var(--down)]/25'}">${up?'BUY':'SELL'} ${d.symbol}</span>
+      <span class="num text-[11px] text-[var(--muted)]">Conf. ${p.confidence}%</span>
+    </div>
+    <dl class="grid grid-cols-2 gap-px rounded-lg overflow-hidden bg-[var(--line)] border border-[var(--line)] text-[12px]">
+      <div class="bg-[var(--surface)] px-3 py-2.5"><dt class="text-[10px] uppercase tracking-wider text-[var(--muted)] mb-1">Entry</dt><dd class="num font-semibold">${formatPrice(p.entry)}</dd></div>
+      <div class="bg-[var(--surface)] px-3 py-2.5"><dt class="text-[10px] uppercase tracking-wider text-[var(--muted)] mb-1">Stop loss</dt><dd class="num font-semibold ${up?'text-[var(--down)]':'text-[var(--up)]'}">${formatPrice(p.stop_loss)}</dd></div>
+      <div class="bg-[var(--surface)] px-3 py-2.5"><dt class="text-[10px] uppercase tracking-wider text-[var(--muted)] mb-1">Take profit</dt><dd class="num font-semibold ${up?'text-[var(--up)]':'text-[var(--down)]'}">${formatPrice(p.take_profit)}</dd></div>
+      <div class="bg-[var(--surface)] px-3 py-2.5"><dt class="text-[10px] uppercase tracking-wider text-[var(--muted)] mb-1">Risk : Reward</dt><dd class="num font-semibold">1 : ${rr}</dd></div>
+    </dl>
+    <p class="text-[12px] leading-relaxed text-[var(--muted)] mt-3 m-0">${p.strategy} · ${p.note||'Awaiting execution condition.'}</p>
+  `;}
  function renderAnalysis(){const a=(state.data&&state.data.analysis)||{};const list=$('analysisList');
   $('analysisMeta').textContent=a.confidence?`${(a.bias||'').toUpperCase()} · ${a.confidence}%`:'';
   const checks=(a.details&&a.details.checks)||[];
-  list.innerHTML=checks.length?checks.map(c=>`<div class="analysis-row"><i class="analysis-dot dot-${c.state}"></i><span>${c.label}</span><b>${c.value}</b></div>`).join(''):'<div class="terminal-empty">Run a scan to build the analysis.</div>';
-  $('analysisVerdict').textContent=(a.details&&a.details.verdict)||a.summary||''}
- function renderPanels(){const d=state.data;renderPlan();renderAnalysis();$('livePrice').textContent=formatPrice(d.price);$('liveChange').textContent=(d.change_pct>=0?'+':'')+Number(d.change_pct).toFixed(2)+'%';$('liveChange').className=d.change_pct>=0?'up':'down';$('feedBadge').textContent=(d.feed.status+' · '+d.feed.source).toUpperCase();$('feedBadge').className='feed-chip feed-'+d.feed.status;
+  list.innerHTML=checks.length?checks.map(c=>`<div class="flex items-center justify-between gap-3 px-4 py-2.5">
+    <span class="text-[12px] text-[var(--muted)]">${c.label}</span>
+    <span class="text-[12px] font-medium ${c.state==='up'?'text-[var(--up)]':(c.state==='down'?'text-[var(--down)]':'text-[var(--warn)]')}">${c.value}</span>
+  </div>`).join(''):'<div class="terminal-empty">Run a scan to build the analysis.</div>';
+  const v = (a.details&&a.details.verdict)||a.summary||'';
+  $('analysisVerdict').innerHTML = v ? `<span class="font-semibold ${a.bias==='bullish'?'text-[var(--up)]':(a.bias==='bearish'?'text-[var(--down)]':'text-[var(--warn)]')}">${(a.bias||'').toUpperCase()} bias.</span> ${v}` : '';}
+ function renderPanels(){const d=state.data;renderPlan();renderAnalysis();$('livePrice').textContent=formatPrice(d.price);$('liveChange').textContent=(d.change_pct>=0?'+':'')+Number(d.change_pct).toFixed(2)+'%';$('liveChange').className=d.change_pct>=0?'up num text-[12px] font-semibold px-1.5 py-0.5 rounded':'down num text-[12px] font-semibold px-1.5 py-0.5 rounded';$('feedBadge').textContent=(d.feed.status+' · '+d.feed.source).toUpperCase();$('feedBadge').className='feed-chip feed-'+d.feed.status+' h-10 inline-flex items-center gap-2 px-3.5 rounded-lg border text-[11px] font-semibold tracking-wider uppercase';$('feedBadge').innerHTML='<span class="relative w-1.5 h-1.5 rounded-full bg-current pulse"></span>'+$('feedBadge').textContent;
   const bt=d.bot_trades||[];const bc=$('botCount');if(bc)bc.textContent=bt.filter(t=>t.status==='open').length+' open';const btl=$('botTrades');
-  if(btl)btl.innerHTML=bt.length?bt.map(t=>`<div class="entry-row"><span class="badge ${t.direction==='buy'?'badge-buy':'badge-sell'}">${t.direction.toUpperCase()}</span><div><strong>${t.bot||'EA bot'} · ${String(t.mode||'').toUpperCase()}</strong><small>Entry ${formatPrice(t.entry)} · SL ${formatPrice(t.stop_loss)} · TP ${formatPrice(t.take_profit)} · risk $${Number(t.risk_amount).toFixed(2)}</small></div><b class="${t.status==='open'?'':(Number(t.pnl)>=0?'up':'down')}">${t.status==='open'?'OPEN':(Number(t.pnl)>=0?'+':'')+Number(t.pnl).toFixed(2)}</b></div>`).join(''):'<div class="terminal-empty">No bot entries on this market yet.</div>';
+  if(btl)btl.innerHTML=bt.length?bt.map(t=>{
+    const buy = t.direction === 'buy';
+    return `<div class="px-4 py-3 hover:bg-[var(--raised)]/40 transition-colors">
+      <div class="flex items-center justify-between gap-2 mb-2">
+        <span class="inline-flex items-center gap-2">
+          <span class="text-[10px] font-bold px-1.5 py-0.5 rounded border ${buy ? 'text-[var(--up)] border-[var(--up)]/25 bg-[var(--up)]/10' : 'text-[var(--down)] border-[var(--down)]/25 bg-[var(--down)]/10'}">${t.direction.toUpperCase()}</span>
+          <span class="text-[12px] font-medium">${t.bot||'EA bot'} · ${String(t.mode||'').toUpperCase()}</span>
+        </span>
+        <span class="num text-[11px] font-bold ${t.status==='open'?'text-[var(--warn)]':(Number(t.pnl)>=0?'text-[var(--up)]':'text-[var(--down)]')}">${t.status==='open'?'OPEN':(Number(t.pnl)>=0?'+':'')+Number(t.pnl).toFixed(2)}</span>
+      </div>
+      <div class="num flex items-center gap-3 text-[11px] text-[var(--muted)]">
+        <span>E <span class="text-[var(--text)]">${formatPrice(t.entry)}</span></span>
+        <span>SL <span class="text-[var(--down)]">${formatPrice(t.stop_loss)}</span></span>
+        <span>TP <span class="text-[var(--up)]">${formatPrice(t.take_profit)}</span></span>
+      </div>
+    </div>`;
+  }).join(''):'<div class="terminal-empty">No bot entries on this market yet.</div>';
   const secondary=d.signals.filter(s=>!s.is_primary);
-  $('entryList').innerHTML=secondary.length?secondary.map(s=>`<div class="entry-row"><span class="badge ${s.direction==='buy'?'badge-buy':'badge-sell'}">${s.direction.toUpperCase()}</span><div><strong>${s.strategy}</strong><small>Entry ${formatPrice(s.entry)} · SL ${formatPrice(s.stop_loss)}</small></div><b>${s.confidence}%</b></div>`).join(''):'<div class="terminal-empty">No supporting entries — the primary plan stands alone.</div>';
-  const f=d.overlays.fvg||[];$('fvgCount').textContent=f.length+' zones';$('fvgList').innerHTML=f.slice().reverse().slice(0,6).map(z=>`<div class="fvg-row"><span class="${z.type==='bullish'?'up':'down'}">${z.type.toUpperCase()}</span><b>${formatPrice(z.bottom)}–${formatPrice(z.top)}</b></div>`).join('')||'<div class="terminal-empty">No recent FVG.</div>';
-  const p=d.overlays.volume_profile||[];$('volumeProfile').innerHTML=p.slice(0,12).map(x=>`<div class="profile-row"><span>${formatPrice(x.price)}</span><i><em style="width:${x.percent}%"></em></i><b>${x.percent}%</b></div>`).join('');
+  $('entryList').innerHTML=secondary.length?secondary.map(s=>{
+    const buy = s.direction === 'buy';
+    return `<div class="px-4 py-3 hover:bg-[var(--raised)]/40 transition-colors">
+      <div class="flex items-center justify-between gap-2 mb-2">
+        <span class="inline-flex items-center gap-2">
+          <span class="text-[10px] font-bold px-1.5 py-0.5 rounded border ${buy ? 'text-[var(--up)] border-[var(--up)]/25 bg-[var(--up)]/10' : 'text-[var(--down)] border-[var(--down)]/25 bg-[var(--down)]/10'}">${s.direction.toUpperCase()}</span>
+          <span class="text-[12px] font-medium">${s.strategy}</span>
+        </span>
+        <span class="num text-[11px] text-[var(--muted)]">${s.confidence}%</span>
+      </div>
+      <div class="num flex items-center gap-3 text-[11px] text-[var(--muted)]">
+        <span>E <span class="text-[var(--text)]">${formatPrice(s.entry)}</span></span>
+        <span>SL <span class="text-[var(--down)]">${formatPrice(s.stop_loss)}</span></span>
+        <span>TP <span class="text-[var(--up)]">${s.take_profit?formatPrice(s.take_profit):'—'}</span></span>
+      </div>
+    </div>`;
+  }).join(''):'<div class="terminal-empty">No supporting entries — the primary plan stands alone.</div>';
+  const f=d.overlays.fvg||[];$('fvgCount').textContent=f.length+' zones';$('fvgList').innerHTML=f.slice().reverse().slice(0,6).map(z=>{
+    const bull = z.type === 'bullish';
+    return `<div class="px-4 py-3 flex items-center justify-between gap-3">
+      <div class="min-w-0">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="w-1.5 h-1.5 rounded-full ${bull ? 'bg-[var(--up)]' : 'bg-[var(--down)]'}"></span>
+          <span class="text-[11px] font-semibold ${bull ? 'text-[var(--up)]' : 'text-[var(--down)]'}">${z.type.charAt(0).toUpperCase()+z.type.slice(1)}</span>
+        </div>
+        <p class="num text-[11px] text-[var(--muted)] m-0">${formatPrice(z.bottom)} – ${formatPrice(z.top)}</p>
+      </div>
+    </div>`;
+  }).join('')||'<div class="terminal-empty">No recent FVG.</div>';
+  const p=d.overlays.volume_profile||[];$('volumeProfile').innerHTML=p.slice(0,12).map(x=>`
+    <div>
+      <div class="flex items-center justify-between text-[11px] mb-1">
+        <span class="num text-[var(--muted)]">${formatPrice(x.price)}</span>
+        <span class="num">${x.percent}%</span>
+      </div>
+      <div class="h-1.5 rounded-full bg-[var(--raised)] overflow-hidden">
+        <div class="h-full rounded-full bg-[var(--brand)]" style="width:${x.percent}%"></div>
+      </div>
+    </div>`).join('');
   const warn=$('terminalWarning');if(d.feed.status==='demo'){warn.hidden=false;warn.textContent='DEMO feed: chart and signals must not be used for trading. '+(d.feed.error||'Configure a market provider.')}else warn.hidden=true;
  }
  async function load(fresh=false){$('terminalStatus').textContent='Updating…';try{const r=await fetch(root.dataset.endpoint+'?timeframe='+state.tf+(fresh?'&fresh=1':''),{headers:{Accept:'application/json'}});if(!r.ok)throw new Error('HTTP '+r.status);state.data=await r.json();renderPanels();draw();$('terminalStatus').textContent='Updated '+new Date().toLocaleTimeString();startCountdown()}catch(e){$('terminalStatus').textContent='Feed error';const w=$('terminalWarning');w.hidden=false;w.textContent='Unable to update terminal: '+e.message}}

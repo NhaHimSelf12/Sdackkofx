@@ -6,7 +6,7 @@
 </style>
 <div class="lesson-grid-main">
     <!-- Sidebar for Lessons -->
-    <div class="card sidebar-nav" style="padding: 0; position: sticky; top: 100px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+    <div class="sidebar-nav rounded-xl border border-[var(--line)] bg-[var(--surface)] overflow-hidden shadow-sm" style="position: sticky; top: 100px;">
         <div style="padding: 20px; border-bottom: 1px solid var(--border); font-weight: 800; font-size: 18px; color: var(--text); background: linear-gradient(135deg, var(--blue-soft), transparent);">
             📚 មេរៀន Forex 
         </div>
@@ -24,7 +24,7 @@
     </div>
 
     <!-- Lesson Content -->
-    <div class="card main-lesson-content" style="padding: 40px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+    <div class="main-lesson-content rounded-xl border border-[var(--line)] bg-[var(--surface)] shadow-sm" style="padding: 40px;">
         
         <div class="lesson-header" style="text-align: center; margin-bottom: 40px;">
             <h1 style="font-size: 36px; color: var(--text); margin: 0 0 16px; font-weight: 900; line-height: 1.4; background: -webkit-linear-gradient(45deg, var(--blue), #9b51e0); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">មេរៀន និង Concept សំខាន់ៗអំពី Forex</h1>
