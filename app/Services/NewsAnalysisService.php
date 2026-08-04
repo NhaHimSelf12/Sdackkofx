@@ -31,8 +31,8 @@ class NewsAnalysisService
     public function refresh(): int
     {
         try {
-            // Fetch from free ForexLive RSS feed instead of requiring NewsAPI key
-            $response = Http::timeout(15)->get('https://www.forexlive.com/feed/news');
+            // Fetch from free CNBC Finance RSS feed
+            $response = Http::timeout(15)->get('https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664');
             if (!$response->successful()) {
                 return 0;
             }
@@ -44,12 +44,18 @@ class NewsAnalysisService
             
             $articles = [];
             foreach ($xml->channel->item as $item) {
+                // Shorten description to max 200 characters to keep UI clean
+                $description = strip_tags((string)$item->description);
+                if (strlen($description) > 200) {
+                    $description = substr($description, 0, 197) . '...';
+                }
+                
                 $articles[] = [
                     'title' => (string)$item->title,
                     'url' => (string)$item->link,
                     'publishedAt' => date('Y-m-d H:i:s', strtotime((string)$item->pubDate)),
-                    'description' => strip_tags((string)$item->description),
-                    'source' => 'ForexLive',
+                    'description' => $description,
+                    'source' => 'CNBC',
                 ];
                 if (count($articles) >= 15) break; // Limit to 15 recent items
             }
@@ -72,18 +78,19 @@ class NewsAnalysisService
                 $kmTitle = $tr->translate($article['title'] ?? '');
                 $kmSummary = $tr->translate($article['description'] ?? '');
             } catch (\Throwable $e) {
-                // Fallback to original if translation fails
-                $kmTitle = $article['title'] ?? '';
-                $kmSummary = $article['description'] ?? '';
+                $kmTitle = '';
+                $kmSummary = '';
             }
 
             NewsItem::updateOrCreate(
-                ['url' => $article['url']], // Unique key is now URL to prevent translation duplicates
+                ['url' => $article['url']], // Unique key is URL
                 [
-                    'title' => $kmTitle,
+                    'title' => $article['title'],
+                    'title_km' => $kmTitle,
                     'source' => $article['source'] ?? null,
                     'published_at' => $article['publishedAt'] ?? now(),
-                    'summary' => $kmSummary,
+                    'summary' => $article['description'],
+                    'summary_km' => $kmSummary,
                     'sentiment' => $analysis['sentiment'],
                     'impact' => $analysis['impact'],
                     'symbols' => $analysis['symbols'],
