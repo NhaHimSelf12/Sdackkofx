@@ -66,21 +66,31 @@ class SignalEngine
             if ($ai['bias'] === 'bearish' && $result['direction'] === 'buy') continue;
 
             $pip = $market->pipSize();
-            $slDist = 10 * $pip;
-            $tp1Dist = 10 * $pip;
-            $tp2Dist = 15 * $pip;
-            $tp3Dist = 20 * $pip;
 
             $entry = round($result['entry'], 5);
             $dir = $result['direction'];
 
-            $stopLoss = round($dir === 'buy' ? $entry - $slDist : $entry + $slDist, 5);
+            // Use the strategy's calculated SL/TP instead of overriding with fixed pips
+            $stopLoss = round($result['stop_loss'], 5);
+            $takeProfit = round($result['take_profit'], 5);
+            
+            // Calculate intermediate take profits
+            $totalDist = abs($takeProfit - $entry);
+            $tp1Dist = $totalDist / 3;
+            $tp2Dist = $totalDist * (2/3);
+            
             $tp1 = round($dir === 'buy' ? $entry + $tp1Dist : $entry - $tp1Dist, 5);
             $tp2 = round($dir === 'buy' ? $entry + $tp2Dist : $entry - $tp2Dist, 5);
-            $takeProfit = round($dir === 'buy' ? $entry + $tp3Dist : $entry - $tp3Dist, 5);
 
-            $risk = $slDist;
-            $reward = $tp3Dist;
+            $risk = abs($entry - $stopLoss);
+            $reward = abs($takeProfit - $entry);
+            
+            if ($risk <= 0) continue;
+            
+            // Reject stale limit setups where current price has already smashed the stop loss or take profit
+            $currentPrice = $last['close'];
+            if ($dir === 'buy' && ($currentPrice <= $stopLoss || $currentPrice >= $takeProfit)) continue;
+            if ($dir === 'sell' && ($currentPrice >= $stopLoss || $currentPrice <= $takeProfit)) continue;
 
             $created[] = Signal::create([
                 'market_id'=>$market->id,'strategy'=>$strategy->code(),'timeframe'=>$timeframe,

@@ -116,34 +116,54 @@ class AiMarketAnalysisService
 
     private function llmSummary(Market $market, array $facts, string $bias): ?string
     {
-        $key = config('forex.openai_key');
-        if (! $key) {
-            return null;
+        $prompt = sprintf(
+            'You are a professional forex analyst. Write a concise 2-3 sentence market analysis without financial disclaimers. ' .
+            '%s (%s). Price %.5f, EMA20 %.5f, EMA50 %.5f, RSI %.1f, structure %s, bias %s, nearest support %s, nearest resistance %s.',
+            $market->symbol, $market->name, $facts['price'], $facts['ema_fast'], $facts['ema_slow'],
+            $facts['rsi'], $facts['structure'], $bias,
+            $facts['supports'][0] ?? 'n/a', $facts['resistances'][0] ?? 'n/a'
+        );
+
+        $geminiKey = env('GEMINI_API_KEY') ?? config('services.gemini.key');
+        if ($geminiKey) {
+            try {
+                $response = Http::timeout(20)
+                    ->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' . $geminiKey, [
+                        'contents' => [
+                            ['parts' => [['text' => $prompt]]]
+                        ]
+                    ]);
+
+                if ($response->successful()) {
+                    return $response->json('candidates.0.content.parts.0.text');
+                }
+            } catch (\Throwable $e) {
+                Log::warning('Gemini analysis failed', ['error' => $e->getMessage()]);
+            }
         }
 
-        try {
-            $response = Http::withToken($key)
-                ->timeout(20)
-                ->post('https://api.openai.com/v1/chat/completions', [
-                    'model' => config('forex.openai_model'),
-                    'messages' => [
-                        ['role' => 'system', 'content' => 'You are a professional forex analyst. Write a concise 2-3 sentence market analysis. No financial advice disclaimers.'],
-                        ['role' => 'user', 'content' => sprintf(
-                            '%s (%s). Price %.5f, EMA20 %.5f, EMA50 %.5f, RSI %.1f, structure %s, bias %s, nearest support %s, nearest resistance %s.',
-                            $market->symbol, $market->name, $facts['price'], $facts['ema_fast'], $facts['ema_slow'],
-                            $facts['rsi'], $facts['structure'], $bias,
-                            $facts['supports'][0] ?? 'n/a', $facts['resistances'][0] ?? 'n/a',
-                        )],
-                    ],
-                    'max_tokens' => 160,
-                ]);
+        $openaiKey = config('forex.openai_key');
+        if ($openaiKey) {
+            try {
+                $response = Http::withToken($openaiKey)
+                    ->timeout(20)
+                    ->post('https://api.openai.com/v1/chat/completions', [
+                        'model' => config('forex.openai_model', 'gpt-3.5-turbo'),
+                        'messages' => [
+                            ['role' => 'user', 'content' => $prompt],
+                        ],
+                        'max_tokens' => 160,
+                    ]);
 
-            return $response->json('choices.0.message.content');
-        } catch (\Throwable $e) {
-            Log::warning('OpenAI analysis failed, using fallback', ['error' => $e->getMessage()]);
-
-            return null;
+                if ($response->successful()) {
+                    return $response->json('choices.0.message.content');
+                }
+            } catch (\Throwable $e) {
+                Log::warning('OpenAI analysis failed, using fallback', ['error' => $e->getMessage()]);
+            }
         }
+
+        return null;
     }
 
     private function heuristicSummary(Market $market, array $facts, string $bias, int $confidence): string
