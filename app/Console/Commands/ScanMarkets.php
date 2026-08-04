@@ -37,7 +37,7 @@ class ScanMarkets extends Command
         }
 
         $fetched = $news->refresh();
-        $this->info($fetched > 0 ? "News refreshed: {$fetched} articles." : 'News: using seeded/demo articles (no NEWSAPI_KEY).');
+        $this->info($fetched > 0 ? "News refreshed: {$fetched} articles fetched and translated." : 'News: No new articles found or fetch failed.');
 
         return self::SUCCESS;
     }

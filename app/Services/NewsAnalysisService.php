@@ -30,36 +30,63 @@ class NewsAnalysisService
     /** Pull latest headlines and store them as analyzed NewsItems. */
     public function refresh(): int
     {
-        $key = config('forex.newsapi_key');
-        if (! $key) {
-            return 0; // demo news comes from the seeder
-        }
-
         try {
-            $articles = Http::timeout(15)->get('https://newsapi.org/v2/everything', [
-                'q' => 'forex OR gold OR bitcoin OR "federal reserve" OR inflation',
-                'language' => 'en',
-                'sortBy' => 'publishedAt',
-                'pageSize' => 30,
-                'apiKey' => $key,
-            ])->json('articles', []);
+            // Fetch from free ForexLive RSS feed instead of requiring NewsAPI key
+            $response = Http::timeout(15)->get('https://www.forexlive.com/feed/news');
+            if (!$response->successful()) {
+                return 0;
+            }
+            
+            $xml = simplexml_load_string($response->body());
+            if (!$xml || !isset($xml->channel->item)) {
+                return 0;
+            }
+            
+            $articles = [];
+            foreach ($xml->channel->item as $item) {
+                $articles[] = [
+                    'title' => (string)$item->title,
+                    'url' => (string)$item->link,
+                    'publishedAt' => date('Y-m-d H:i:s', strtotime((string)$item->pubDate)),
+                    'description' => strip_tags((string)$item->description),
+                    'source' => 'ForexLive',
+                ];
+                if (count($articles) >= 15) break; // Limit to 15 recent items
+            }
         } catch (\Throwable $e) {
             Log::warning('News fetch failed', ['error' => $e->getMessage()]);
-
             return 0;
         }
 
+        $tr = new \Stichoza\GoogleTranslate\GoogleTranslate('km', 'en');
         $count = 0;
+        
         foreach ($articles as $article) {
+            if (empty($article['url'])) continue;
+            
+            // Analyze sentiment using the ORIGINAL English text
             $analysis = $this->analyzeHeadline($article['title'] ?? '');
+            
+            // Try to translate to Khmer
+            try {
+                $kmTitle = $tr->translate($article['title'] ?? '');
+                $kmSummary = $tr->translate($article['description'] ?? '');
+            } catch (\Throwable $e) {
+                // Fallback to original if translation fails
+                $kmTitle = $article['title'] ?? '';
+                $kmSummary = $article['description'] ?? '';
+            }
+
             NewsItem::updateOrCreate(
-                ['title' => $article['title']],
+                ['url' => $article['url']], // Unique key is now URL to prevent translation duplicates
                 [
-                    'source' => $article['source']['name'] ?? null,
-                    'url' => $article['url'] ?? null,
+                    'title' => $kmTitle,
+                    'source' => $article['source'] ?? null,
                     'published_at' => $article['publishedAt'] ?? now(),
-                    'summary' => $article['description'] ?? null,
-                    ...$analysis,
+                    'summary' => $kmSummary,
+                    'sentiment' => $analysis['sentiment'],
+                    'impact' => $analysis['impact'],
+                    'symbols' => $analysis['symbols'],
                 ],
             );
             $count++;
