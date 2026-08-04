@@ -100,7 +100,12 @@
 
         <div class="space-y-5">
             <div class="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-5">
-                <h2 class="text-[13px] font-semibold mb-3 m-0">AI analysis</h2>
+                <h2 class="text-[13px] font-semibold mb-3 m-0 flex items-center justify-between">
+                    AI analysis
+                    <span class="text-[10px] font-medium px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center gap-1">
+                        ✨ Powered by Gemini AI
+                    </span>
+                </h2>
                 <p class="text-[13px] leading-relaxed text-[var(--text)]/80 m-0 mb-4">{{ $market->ai_summary ?? 'Run php artisan forex:scan to generate analysis.' }}</p>
                 @if ($market->key_levels)
                     <h3 class="text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--muted)] mb-2.5 m-0">Resistance</h3>
