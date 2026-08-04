@@ -128,7 +128,7 @@ class AiMarketAnalysisService
         if ($geminiKey) {
             try {
                 $response = Http::timeout(20)
-                    ->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' . $geminiKey, [
+                    ->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=' . $geminiKey, [
                         'contents' => [
                             ['parts' => [['text' => $prompt]]]
                         ]
