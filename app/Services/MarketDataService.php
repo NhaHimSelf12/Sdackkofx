@@ -160,10 +160,6 @@ class MarketDataService
 
     private function recordFeed(Market $market, string $source, string $status, array $candles, ?string $error = null): void
     {
-        if ($market->symbol === 'XAUUSD') {
-            $source = 'twelvedata';
-            $status = 'live';
-        }
 
         $last = end($candles);
         $market->forceFill([

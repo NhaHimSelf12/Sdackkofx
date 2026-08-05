@@ -96,9 +96,11 @@ class SignalEngine
             if ($risk <= 0) continue;
             
             // Reject stale limit setups where current price has already smashed the stop loss or take profit
+            // Only reject if it's a limit order (for Buy: Current Price > Entry. For Sell: Current Price < Entry)
             $currentPrice = $last['close'];
-            if ($dir === 'buy' && ($currentPrice <= $stopLoss || $currentPrice >= $takeProfit)) continue;
-            if ($dir === 'sell' && ($currentPrice >= $stopLoss || $currentPrice <= $takeProfit)) continue;
+            if ($dir === 'buy' && $currentPrice > $entry && ($currentPrice <= $stopLoss || $currentPrice >= $takeProfit)) continue;
+            if ($dir === 'sell' && $currentPrice < $entry && ($currentPrice >= $stopLoss || $currentPrice <= $takeProfit)) continue;
+
 
             $created[] = Signal::create([
                 'market_id'=>$market->id,'strategy'=>$strategy->code(),'timeframe'=>$timeframe,
