@@ -85,3 +85,18 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('admin/public-strategies', \App\Http\Controllers\PublicStrategyController::class)->names('admin.public-strategies');
 });
+
+Route::get('/test-td', function () {
+    $key = config('forex.twelvedata_key');
+    if (!$key) return 'No key configured.';
+    $response = Illuminate\Support\Facades\Http::get('https://api.twelvedata.com/time_series', [
+        'symbol' => 'XAU/USD',
+        'interval' => '1h',
+        'outputsize' => 10,
+        'apikey' => $key,
+    ]);
+    return response()->json([
+        'status' => $response->status(),
+        'body' => $response->json(),
+    ]);
+});
