@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Log;
 class MarketDataService
 {
     private const YAHOO_SYMBOLS = [
-        'XAUUSD' => 'GC=F',     // COMEX Gold futures: transparent spot proxy
+        'XAUUSD' => 'XAUUSD=X', // Spot Gold
         'XAGUSD' => 'SI=F',     // COMEX Silver futures
         'BTCUSD' => 'BTC-USD',
         'ETHUSD' => 'ETH-USD',
