@@ -74,6 +74,14 @@ class SignalEngine
             $stopLoss = round($result['stop_loss'], 5);
             $takeProfit = round($result['take_profit'], 5);
             
+            // User requested fixed 10-point SL and 20-point TP for XAUUSD
+            if (strtoupper($market->symbol) === 'XAUUSD') {
+                $slDist = 10.0;
+                $tpDist = 20.0;
+                $stopLoss = round($dir === 'buy' ? $entry - $slDist : $entry + $slDist, 5);
+                $takeProfit = round($dir === 'buy' ? $entry + $tpDist : $entry - $tpDist, 5);
+            }
+            
             // Calculate intermediate take profits
             $totalDist = abs($takeProfit - $entry);
             $tp1Dist = $totalDist / 3;
