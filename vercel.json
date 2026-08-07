@@ -35,11 +35,5 @@
         "SESSION_DRIVER": "cookie",
         "SESSION_LIFETIME": "43200",
         "QUEUE_CONNECTION": "sync"
-    },
-    "crons": [
-        {
-            "path": "/api/cron/scan",
-            "schedule": "*/15 * * * *"
-        }
-    ]
+    }
 }
