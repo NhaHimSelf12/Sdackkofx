@@ -22,8 +22,9 @@ class TrendlineDetector
     {
         [$highs, $lows] = $this->analysis->swings($candles);
 
-        $market->trendlines()->where('timeframe', $timeframe)->delete();
-        $created = 0;
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($market, $timeframe, $highs, $lows, $candles) {
+            $market->trendlines()->where('timeframe', $timeframe)->delete();
+            $created = 0;
 
         // Sell-side trendline: connect the last two swing highs.
         if (count($highs) >= 2) {
@@ -84,6 +85,7 @@ class TrendlineDetector
             $created++;
         }
 
-        return $created;
+            return $created;
+        });
     }
 }

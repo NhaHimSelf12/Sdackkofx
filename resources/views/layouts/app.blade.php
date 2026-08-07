@@ -245,6 +245,9 @@
       </button>
       <form method="POST" action="{{ route('signals.refresh') }}" class="m-0 flex">
         @csrf
+        @if(isset($market))
+          <input type="hidden" name="symbol" value="{{ $market->symbol }}">
+        @endif
         <button type="submit" class="h-10 inline-flex items-center gap-2.5 px-4 rounded-lg bg-[var(--brand)] text-white text-[13px] font-semibold hover:opacity-90 transition border-none cursor-pointer">
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 11-3-6.7"/><path d="M21 3v6h-6"/></svg>
           Refresh signals

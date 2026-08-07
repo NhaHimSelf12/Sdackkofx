@@ -11,8 +11,10 @@ class SignalScanController extends Controller
     public function __invoke(Request $request, SignalEngine $engine)
     {
         $created = 0; $demo = [];
-        // Only scan top 3 markets to avoid TwelveData Free Tier rate limit (8 req/min)
-        $markets = Market::whereIn('symbol', ['XAUUSD', 'BTCUSD', 'EURUSD'])->get();
+        
+        $symbols = $request->has('symbol') ? [$request->input('symbol')] : ['XAUUSD', 'BTCUSD', 'EURUSD'];
+        $markets = Market::whereIn('symbol', $symbols)->get();
+
         foreach ($markets as $market) {
             $signals = $engine->scan($market, config('forex.default_timeframe', 'H1'), true);
             $created += count($signals);
