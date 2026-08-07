@@ -177,3 +177,5 @@ php artisan schedule:work
 You can also press **Refresh signals** in the dashboard or Signals page. Verify results with `php artisan forex:signal-check`.
 
 > **Disclaimer:** signals and analysis are for information/education only and are not financial advice.
+   
+ 
