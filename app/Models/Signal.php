@@ -12,6 +12,7 @@ class Signal extends Model
         'entry', 'stop_loss', 'take_profit', 'tp1', 'tp2', 'risk_reward',
         'confidence', 'status', 'is_primary', 'data_source', 'data_status', 'feed_price',
         'generated_at', 'expires_at', 'note',
+        'hit_entry', 'hit_tp1', 'hit_tp2', 'hit_tp', 'hit_sl', 'is_closed',
     ];
 
     protected $casts = [
@@ -25,6 +26,12 @@ class Signal extends Model
         'is_primary' => 'boolean',
         'generated_at' => 'datetime',
         'expires_at' => 'datetime',
+        'hit_entry' => 'boolean',
+        'hit_tp1' => 'boolean',
+        'hit_tp2' => 'boolean',
+        'hit_tp' => 'boolean',
+        'hit_sl' => 'boolean',
+        'is_closed' => 'boolean',
     ];
 
     public function market(): BelongsTo
