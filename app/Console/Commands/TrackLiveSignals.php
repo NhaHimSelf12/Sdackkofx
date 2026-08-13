@@ -12,7 +12,7 @@ class TrackLiveSignals extends Command
     protected $signature = 'forex:track-signals';
     protected $description = 'Track active signals against live market prices and trigger Telegram alerts.';
 
-    public function handle(TelegramService $telegram): int
+    public function handle(TelegramService $telegram, \App\Services\MarketDataService $dataService): int
     {
         // Get all active and non-closed signals
         $signals = Signal::with('market')
@@ -25,12 +25,24 @@ class TrackLiveSignals extends Command
             return self::SUCCESS;
         }
 
+        // Keep track of updated markets to avoid fetching multiple times
+        $updatedMarkets = [];
+
         foreach ($signals as $signal) {
             $market = $signal->market;
             if (!$market) continue;
 
-            // Make sure the market price is up to date (this relies on your market feed update mechanism)
-            // If the market price is updated via another cron, this is fine.
+            if (!in_array($market->id, $updatedMarkets)) {
+                try {
+                    // Fetch latest M1 candles to update the market price in database
+                    $dataService->candles($market, 'M1', 2, true);
+                    $market->refresh();
+                } catch (\Exception $e) {
+                    Log::warning("Failed to update price for {$market->symbol}: " . $e->getMessage());
+                }
+                $updatedMarkets[] = $market->id;
+            }
+
             $currentPrice = $market->price;
             if (!$currentPrice) continue;
 
