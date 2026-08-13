@@ -117,8 +117,13 @@ class TelegramService
         $symbol = $signal->market->symbol ?? 'N/A';
         $isBuy  = strtolower($signal->direction) === 'buy';
         $arrow  = $isBuy ? '🟢' : '🔴';
+        $dirLabel = strtoupper($signal->direction);
+        
+        $precision = $signal->market ? $signal->market->precision() : 2;
+        $entry = number_format($signal->entry, $precision);
         
         $msg = "🔔 *{$symbol} Update*\n━━━━━━━━━━━━━━━━━━━━━━\n";
+        $msg .= "▫️ *{$dirLabel} Entry Price:* `{$entry}`\n\n";
 
         switch ($statusType) {
             case 'active':
