@@ -62,19 +62,6 @@ class TelegramService
         $slPips = number_format($slDistance, $precision);
         $tpPips = number_format($tpDistance, $precision);
 
-        // Risk:Reward
-        $rr = $signal->risk_reward ? number_format($signal->risk_reward, 1) : 'N/A';
-
-        // Confidence
-        $conf = $signal->confidence ? $signal->confidence . '%' : 'N/A';
-
-        // Confidence bar visual
-        $confValue = intval($signal->confidence ?? 0);
-        $confBar = $this->buildConfidenceBar($confValue);
-
-        // Risk level based on RR
-        $rrValue = floatval($signal->risk_reward ?? 0);
-        $riskEmoji = $rrValue >= 3 ? '🟢 Low Risk' : ($rrValue >= 2 ? '🟡 Moderate' : '🔴 High Risk');
 
         // Timeframe
         $tf = strtoupper($signal->timeframe ?? 'H1');
