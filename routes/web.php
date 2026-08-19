@@ -20,6 +20,12 @@ Route::get('/', [PublicController::class, 'index'])->name('home');
 Route::get('/strategy/{publicStrategy}', [PublicController::class, 'showStrategy'])->name('public.strategy.show');
 Route::get('/learn', [PublicController::class, 'learn'])->name('public.learn');
 
+Route::get('/cron/scan', function (\Illuminate\Http\Request $request) { if ($request->query('token') !== env('CRON_SECRET')) return response('Unauthorized', 401); \Illuminate\Support\Facades\Artisan::call('forex:scan', ['symbol' => 'XAUUSD']); return response()->json(['status' => 'success']); });
+Route::get('/cron/track', function (\Illuminate\Http\Request $request) { if ($request->query('token') !== env('CRON_SECRET')) return response('Unauthorized', 401); \Illuminate\Support\Facades\Artisan::call('forex:track-signals'); return response()->json(['status' => 'success']); });
+
+Route::get('/api/cron/scan', function (\Illuminate\Http\Request $request) { if ($request->query('token') !== env('CRON_SECRET')) return response('Unauthorized', 401); \Illuminate\Support\Facades\Artisan::call('forex:scan', ['symbol' => 'XAUUSD']); return response()->json(['status' => 'success']); });
+Route::get('/api/cron/track', function (\Illuminate\Http\Request $request) { if ($request->query('token') !== env('CRON_SECRET')) return response('Unauthorized', 401); \Illuminate\Support\Facades\Artisan::call('forex:track-signals'); return response()->json(['status' => 'success']); });
+
 Route::get('/db-test', function () {
     return response()->json([
         'env_DB_CONNECTION' => $_ENV['DB_CONNECTION'] ?? 'not set',
